@@ -22,8 +22,10 @@
 	<div class='container'>
 		<div class="jumbotron">
 			<h3>Chapter 1</h3>
-			<iframe width="560" height="315" src="https://www.youtube.com/embed/LAKQU5InW3s" frameborder="0" allowfullscreen></iframe>
-			<p>A farmer is picking pears. Is this correct?</p>
+			<div>
+			<div id="playerMain"/>
+			</div>
+ 		<p>A farmer is picking pears. Is this correct?</p>
 			<form>
 				<input type="radio" name="now" value="correct"> Correct
 				<input type="radio" name="now" value="incorrect"> Incorrect
@@ -46,23 +48,19 @@
       <div class="modal-body">
 	<div class="whitearea" id="player"/>
 <script>
-      // 2. This code loads the IFrame Player API code asynchronously.
       var tag = document.createElement('script');
 
       tag.src = "https://www.youtube.com/iframe_api";
       var firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-      // 3. This function creates an <iframe> (and YouTube player)
-      //    after the API code downloads.
       var player;
+      var playerMain;
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
           height: '315',
           width: '560',
           videoId: 'LAKQU5InW3s',
-	  startSeconds: 70,
-	  endSeconds: 100,
 	  playerVars: { controls: 0,disablekb: 1
           },
           events: {
@@ -70,9 +68,19 @@
             'onStateChange': onPlayerStateChange
           }
         });
+        playerMain = new YT.Player('playerMain', {
+          height: '315',
+          width: '560',
+          videoId: 'LAKQU5InW3s',
+	  playerVars: { controls: 0,disablekb: 1
+          },
+          events: {
+            'onReady': onPlayerMainReady,
+            'onStateChange': onPlayerMainStateChange
+          }
+        });
       }
 
-      // 4. The API will call this function when the video player is ready.
       function onPlayerReady(event) {
 	$('#chVideo').on('shown.bs.modal', function(){
 		player.seekTo(70, false);
@@ -83,21 +91,39 @@
 		player.stopVideo();
 	});
       }
+      function onPlayerMainReady(event) {
+	      playerMain.seekTo(5,false);
+      }
 
-      // 5. The API calls this function when the player's state changes.
-      //    The function indicates that when playing a video (state=1),
-      //    the player should play for six seconds and then stop.
-      var done = false;
+      function checkSeek() {
+	      if(player.getPlayerState()!=YT.PlayerState.PLAYING) {
+		      return;
+	      }
+	      if(player.getCurrentTime()>100) {
+		      $('#chVideo').modal('hide');
+	      } else {
+	      	      setTimeout(checkSeek, 100);
+      	      }
+      }
+
+      function checkSeekMain() {
+	      if(playerMain.getPlayerState()!=YT.PlayerState.PLAYING) {
+		      return;
+	      }
+	      if(playerMain.getCurrentTime()>12) {
+		      playerMain.seekTo(5, false);
+		      playerMain.stopVideo();
+	      } else {
+	      	      setTimeout(checkSeekMain, 100);
+      	      }
+      }
       function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING && !done) {
-          // setTimeout(stopVideo, 6000);
-          done = true;
-        }
+	setTimeout(checkSeek, 100);
       }
-      function stopVideo() {
-        player.stopVideo();
-	$('#chVideo').modal('hide');
+      function onPlayerMainStateChange(event) {
+	setTimeout(checkSeekMain, 100);
       }
+ 
     </script>
       </div>
       <div class="modal-footer">
