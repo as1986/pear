@@ -19,15 +19,24 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
   <script>
+  if (typeof tag === "undefined") {
+  // if first run load the YT API which will call the correct functions.
   var tag = document.createElement('script');
-
-  tag.src = "https://www.youtube.com/iframe_api";
+  tag.src = "https://www.youtube.com/iframe_api?ch1";
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
+} else {
+   // if YT api already loaded, we need to call the function.
+   alert('already loaded!');
+   window.onYouTubeIframeAPIReady();
+}
   var playerRef;
   var playerMain;
-  function onYouTubeIframeAPIReady() {
+
+  var refReady = false;
+  var mainReady = false;
+
+  window.onYouTubeIframeAPIReady = function() {
     playerRef = new YT.Player('playerRef', {
       height: '315',
       width: '560',
@@ -39,6 +48,43 @@
         'onStateChange': onPlayerRefStateChange
       }
     });
+  }
+
+  function whenAllReady() {
+    if(refReady && mainReady) {
+      $('#refVideo').on('refVideoShown', function(){
+        $('#refVideo').fadeTo(100, 1);
+        playerRef.seekTo(70, false);
+        playerRef.playVideo();
+      });
+      $('#refVideo').on('refVideoHidden', function(){
+        $('#refVideo').fadeTo(500, 0.2);
+        playerRef.seekTo(70, false);
+        playerRef.stopVideo();
+      });
+      $('#playRef').on('click', function(){
+        $('#mainVideo').trigger('mainVideoHidden');
+        $('#refVideo').trigger('refVideoShown');
+      });
+      $('#mainVideo').on('mainVideoShown', function(){
+        $('#mainVideo').fadeTo(100, 1);
+        playerMain.seekTo(5, false);
+        playerMain.playVideo();
+      });
+      $('#mainVideo').on('mainVideoHidden', function(){
+        $('#mainVideo').fadeTo(500, 0.2);
+        playerMain.seekTo(5, false);
+        playerMain.stopVideo();
+      });
+      $('#playMain').on('click', function(){
+        $('#refVideo').trigger('refVideoHidden');
+        $('#mainVideo').trigger('mainVideoShown');
+      });
+    }
+  }
+
+  function onPlayerRefReady(event) {
+    refReady=true;
     playerMain = new YT.Player('playerMain', {
       height: '315',
       width: '560',
@@ -51,38 +97,9 @@
       }
     });
   }
-
-  function onPlayerRefReady(event) {
-    $('#refVideo').on('refVideoShown', function(){
-      $('#refVideo').fadeTo(100, 1);
-      playerRef.seekTo(70, false);
-      playerRef.playVideo();
-    });
-    $('#refVideo').on('refVideoHidden', function(){
-      $('#refVideo').fadeTo(500, 0.2);
-      playerRef.seekTo(70, false);
-      playerRef.stopVideo();
-    });
-    $('#playRef').on('click', function(){
-      $('#mainVideo').trigger('mainVideoHidden');
-      $('#refVideo').trigger('refVideoShown');
-    });
-  }
   function onPlayerMainReady(event) {
-    $('#mainVideo').on('mainVideoShown', function(){
-      $('#mainVideo').fadeTo(100, 1);
-      playerMain.seekTo(5, false);
-      playerMain.playVideo();
-    });
-    $('#mainVideo').on('mainVideoHidden', function(){
-      $('#mainVideo').fadeTo(500, 0.2);
-      playerMain.seekTo(5, false);
-      playerMain.stopVideo();
-    });
-    $('#playMain').on('click', function(){
-      $('#refVideo').trigger('refVideoHidden');
-      $('#mainVideo').trigger('mainVideoShown');
-    });
+    mainReady=true;
+    whenAllReady();
   }
 
   function checkSeek() {

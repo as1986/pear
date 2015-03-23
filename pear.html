@@ -12,6 +12,22 @@
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 
+<script>
+var tag = document.createElement('script');
+var player;
+tag.src = "https://www.youtube.com/iframe_api?pear";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+window.onYouTubeIframeAPIReady = function() {
+  player = new YT.Player('wholeStory', {
+    height: '315',
+    width: '560',
+    videoId: 'LAKQU5InW3s',
+
+  });
+}
+</script>
+
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
@@ -19,9 +35,9 @@
 	<div class='container'>
 		<div class="jumbotron">
 			<p>First watch this video:
-			<iframe width="560" height="315" src="https://www.youtube.com/embed/LAKQU5InW3s" frameborder="0" allowfullscreen></iframe>
+			<div id='wholeStory'> </div>
 			</p>
-			<p>And finish <a href="ch1.html">those tasks</a></p>	
+			<p>And finish <a href="ch1.html">those tasks</a></p>
 		</div>
 	</div>
 </body>
