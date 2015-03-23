@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+	<title></title>
+	<meta name="description" content="" />
+  	<meta name="keywords" content="" />
+	<meta name="robots" content="" />
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class='container'>
+		<div class="jumbotron">
+			<h3>Chapter 1</h3>
+			<iframe width="560" height="315" src="https://www.youtube.com/embed/LAKQU5InW3s" frameborder="0" allowfullscreen></iframe>
+			<p>A farmer is picking pears. Is this correct?</p>
+			<form>
+				<input type="radio" name="now" value="correct"> Correct
+				<input type="radio" name="now" value="incorrect"> Incorrect
+			</form>
+			<p>
+				Imagine you are a time traveler passing by the scene of Chapter 1. As a time traveler, you know both the future and the past. Tell the farmer the content of <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#chVideo">Chapter 3</button>.
+			</p>
+			<form>
+			You: <input type="text">
+			</form>
+		</div>
+	</div>
+<div class="modal fade" id="chVideo" tabindex="-1" role="dialog" aria-labelledby="chVideoDiag" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="chVideoDiag">Chapter 3</h4>
+      </div>
+      <div class="modal-body">
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/LAKQU5InW3s?start=70&end=100" frameborder="0"></iframe>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
