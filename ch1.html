@@ -2,134 +2,161 @@
 <html lang="">
 <head>
   <meta charset="utf-8">
-	<title></title>
-	<meta name="description" content="" />
-  	<meta name="keywords" content="" />
-	<meta name="robots" content="" />
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <title></title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <meta name="robots" content="" />
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 
-<link rel="stylesheet" href="pear.css">
+  <link rel="stylesheet" href="pear.css">
 
-<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+  <script>
+  var tag = document.createElement('script');
+
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  var playerRef;
+  var playerMain;
+  function onYouTubeIframeAPIReady() {
+    playerRef = new YT.Player('playerRef', {
+      height: '315',
+      width: '560',
+      videoId: 'LAKQU5InW3s',
+      playerVars: { controls: 0,disablekb: 1
+      },
+      events: {
+        'onReady': onPlayerRefReady,
+        'onStateChange': onPlayerRefStateChange
+      }
+    });
+    playerMain = new YT.Player('playerMain', {
+      height: '315',
+      width: '560',
+      videoId: 'LAKQU5InW3s',
+      playerVars: { controls: 0,disablekb: 1
+      },
+      events: {
+        'onReady': onPlayerMainReady,
+        'onStateChange': onPlayerMainStateChange
+      }
+    });
+  }
+
+  function onPlayerRefReady(event) {
+    $('#refVideo').on('refVideoShown', function(){
+      $('#refVideo').fadeTo(100, 1);
+      playerRef.seekTo(70, false);
+      playerRef.playVideo();
+    });
+    $('#refVideo').on('refVideoHidden', function(){
+      $('#refVideo').fadeTo(500, 0.2);
+      playerRef.seekTo(70, false);
+      playerRef.stopVideo();
+    });
+    $('#playRef').on('click', function(){
+      $('#mainVideo').trigger('mainVideoHidden');
+      $('#refVideo').trigger('refVideoShown');
+    });
+  }
+  function onPlayerMainReady(event) {
+    $('#mainVideo').on('mainVideoShown', function(){
+      $('#mainVideo').fadeTo(100, 1);
+      playerMain.seekTo(5, false);
+      playerMain.playVideo();
+    });
+    $('#mainVideo').on('mainVideoHidden', function(){
+      $('#mainVideo').fadeTo(500, 0.2);
+      playerMain.seekTo(5, false);
+      playerMain.stopVideo();
+    });
+    $('#playMain').on('click', function(){
+      $('#refVideo').trigger('refVideoHidden');
+      $('#mainVideo').trigger('mainVideoShown');
+    });
+  }
+
+  function checkSeek() {
+    if(playerRef.getPlayerState()!=YT.PlayerState.PLAYING) {
+      return;
+    }
+    if(playerRef.getCurrentTime()>100) {
+      $('#refVideo').trigger('refVideoHidden');
+    } else {
+      setTimeout(checkSeek, 100);
+    }
+  }
+
+  function checkSeekMain() {
+    if(playerMain.getPlayerState()!=YT.PlayerState.PLAYING) {
+      return;
+    }
+    if(playerMain.getCurrentTime()>12) {
+      $('#mainVideo').trigger('mainVideoHidden');
+    } else {
+      setTimeout(checkSeekMain, 100);
+    }
+  }
+  function onPlayerRefStateChange(event) {
+    setTimeout(checkSeek, 100);
+  }
+  function onPlayerMainStateChange(event) {
+    setTimeout(checkSeekMain, 100);
+  }
+
+  </script>
+
 </head>
 <body>
-	<div class='container'>
-		<div class="jumbotron">
-			<h3>Chapter 1</h3>
-			<div>
-			<div id="playerMain"/>
-			</div>
- 		<p>A farmer is picking pears. Is this correct?</p>
-			<form>
-				<input type="radio" name="now" value="correct"> Correct
-				<input type="radio" name="now" value="incorrect"> Incorrect
-			</form>
-			<p>
-				Imagine you are a time traveler passing by the scene of Chapter 1. As a time traveler, you know both the future and the past. Tell the farmer the content of <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#chVideo">Chapter 3</button>.
-			</p>
-			<form>
-			You: <input type="text">
-			</form>
-		</div>
-	</div>
-<div class="modal fade" id="chVideo" tabindex="-1" role="dialog" aria-labelledby="chVideoDiag" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="chVideoDiag">Chapter 3</h4>
-      </div>
-      <div class="modal-body">
-	<div class="whitearea" id="player"/>
-<script>
-      var tag = document.createElement('script');
-
-      tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-      var player;
-      var playerMain;
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-          height: '315',
-          width: '560',
-          videoId: 'LAKQU5InW3s',
-	  playerVars: { controls: 0,disablekb: 1
-          },
-          events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-          }
-        });
-        playerMain = new YT.Player('playerMain', {
-          height: '315',
-          width: '560',
-          videoId: 'LAKQU5InW3s',
-	  playerVars: { controls: 0,disablekb: 1
-          },
-          events: {
-            'onReady': onPlayerMainReady,
-            'onStateChange': onPlayerMainStateChange
-          }
-        });
-      }
-
-      function onPlayerReady(event) {
-	$('#chVideo').on('shown.bs.modal', function(){
-		player.seekTo(70, false);
-		done = false;
-        	player.playVideo();
-	});
-	$('#chVideo').on('hide.bs.modal', function(){
-		player.stopVideo();
-	});
-      }
-      function onPlayerMainReady(event) {
-	      playerMain.seekTo(5,false);
-      }
-
-      function checkSeek() {
-	      if(player.getPlayerState()!=YT.PlayerState.PLAYING) {
-		      return;
-	      }
-	      if(player.getCurrentTime()>100) {
-		      $('#chVideo').modal('hide');
-	      } else {
-	      	      setTimeout(checkSeek, 100);
-      	      }
-      }
-
-      function checkSeekMain() {
-	      if(playerMain.getPlayerState()!=YT.PlayerState.PLAYING) {
-		      return;
-	      }
-	      if(playerMain.getCurrentTime()>12) {
-		      playerMain.seekTo(5, false);
-		      playerMain.stopVideo();
-	      } else {
-	      	      setTimeout(checkSeekMain, 100);
-      	      }
-      }
-      function onPlayerStateChange(event) {
-	setTimeout(checkSeek, 100);
-      }
-      function onPlayerMainStateChange(event) {
-	setTimeout(checkSeekMain, 100);
-      }
- 
-    </script>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
+  <div class='container'>
+    <div class="well">
+      <p>
+        Imagine you are a time traveler...
+      </p>
     </div>
+    <div class="row">
+      <div class="col-md-6">
+        <p>
+          You are at this scene:
+        </p>
+        <h3>Chapter 1</h3>
+        <div id="mainVideo">
+          <div id="playerMain"> </div>
+        </div>
+        <!--
+        <p>A farmer is picking pears. Is this correct?</p>
+        <form>
+        <input type="radio" name="now" value="correct"> Correct
+        <input type="radio" name="now" value="incorrect"> Incorrect
+      </form>
+    -->
+      </div>
+      <div class="col-md-6">
+        <p>
+          Try describe this scene:
+        </p>
+        <h3>Chapter 3</h3>
+        <div id="refVideo">
+          <div id="playerRef"> </div>
+        </div>
+      </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <button id="playRef" class="btn btn-default" type="submit">Play Chapter 3</button>
+    <button id="playMain" class="btn btn-default" type="submit">Play Chapter 1</button>
+    <form>
+      You: <input type="text">
+    </form>
   </div>
 </div>
 </body>
