@@ -20,21 +20,24 @@
 
   <script>
   if (typeof tag === "undefined") {
-  // if first run load the YT API which will call the correct functions.
-  var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api?ch1";
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-} else {
-   // if YT api already loaded, we need to call the function.
-   alert('already loaded!');
-   window.onYouTubeIframeAPIReady();
-}
+    // if first run load the YT API which will call the correct functions.
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api?ch1";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  } else {
+    // if YT api already loaded, we need to call the function.
+    alert('already loaded!');
+    window.onYouTubeIframeAPIReady();
+  }
   var playerRef;
   var playerMain;
 
   var refReady = false;
   var mainReady = false;
+
+  var mainScenePlayed = false;
+  var refScenePlayed = false;
 
   window.onYouTubeIframeAPIReady = function() {
     playerRef = new YT.Player('playerRef', {
@@ -53,12 +56,12 @@
   function whenAllReady() {
     if(refReady && mainReady) {
       $('#refVideo').on('refVideoShown', function(){
-        $('#refVideo').fadeTo(100, 1);
+        $('#refScene').fadeTo(100, 1);
         playerRef.seekTo(70, false);
         playerRef.playVideo();
       });
       $('#refVideo').on('refVideoHidden', function(){
-        $('#refVideo').fadeTo(500, 0.2);
+        $('#refScene').fadeTo(500, 0.2);
         playerRef.seekTo(70, false);
         playerRef.stopVideo();
       });
@@ -67,19 +70,32 @@
         $('#refVideo').trigger('refVideoShown');
       });
       $('#mainVideo').on('mainVideoShown', function(){
-        $('#mainVideo').fadeTo(100, 1);
+        $('#mainScene').fadeTo(100, 1);
         playerMain.seekTo(5, false);
         playerMain.playVideo();
       });
       $('#mainVideo').on('mainVideoHidden', function(){
-        $('#mainVideo').fadeTo(500, 0.2);
+        $('#mainScene').fadeTo(500, 0.2);
         playerMain.seekTo(5, false);
         playerMain.stopVideo();
       });
+      $('#description').on('descriptionHidden', function(){
+        $(this).fadeTo(500, 0.2);
+      })
+      $('#description').on('descriptionShown', function(){
+        $(this).fadeTo(100, 1);
+        $('#desc-text').focus();
+      })
       $('#playMain').on('click', function(){
         $('#refVideo').trigger('refVideoHidden');
         $('#mainVideo').trigger('mainVideoShown');
       });
+
+      if(!mainScenePlayed) {
+        $('#description').trigger('descriptionHidden');
+        $('#refVideo').trigger('refVideoHidden');
+        $('#mainVideo').trigger('mainVideoShown');
+      }
     }
   }
 
@@ -107,6 +123,10 @@
       return;
     }
     if(playerRef.getCurrentTime()>100) {
+      if(!refScenePlayed || !mainScenePlayed) {
+        $('#description').trigger('descriptionShown');
+      }
+      refScenePlayed = true;
       $('#refVideo').trigger('refVideoHidden');
     } else {
       setTimeout(checkSeek, 100);
@@ -118,7 +138,11 @@
       return;
     }
     if(playerMain.getCurrentTime()>12) {
+      mainScenePlayed = true;
       $('#mainVideo').trigger('mainVideoHidden');
+      if(!refScenePlayed) {
+        $('#refVideo').trigger('refVideoShown');
+      }
     } else {
       setTimeout(checkSeekMain, 100);
     }
@@ -137,15 +161,15 @@
   <div class='container'>
     <div class="well">
       <p>
-        Imagine you are a time traveler...
+        You are an actor in this movie...
       </p>
     </div>
     <div class="row">
-      <div class="col-md-6">
-        <p>
-          You are at this scene:
-        </p>
-        <h3>Chapter 1</h3>
+      <div class="col-md-6" id="mainScene">
+        <h4>
+          You are at the scene below:
+        </h4>
+        <h5>Chapter 1</h5>
         <div id="mainVideo">
           <div id="playerMain"> </div>
         </div>
@@ -156,24 +180,30 @@
         <input type="radio" name="now" value="incorrect"> Incorrect
       </form>
     -->
-      </div>
-      <div class="col-md-6">
-        <p>
-          Try describe this scene:
-        </p>
-        <h3>Chapter 3</h3>
-        <div id="refVideo">
-          <div id="playerRef"> </div>
-        </div>
-      </div>
+  </div>
+  <div class="col-md-6" id="refScene">
+    <h4>
+      Try describe the scene below:
+    </h4>
+    <h5>Chapter 3</h5>
+    <div id="refVideo">
+      <div id="playerRef"> </div>
+    </div>
+  </div>
 </div>
 <div class="row">
-  <div class="col-md-6">
-    <button id="playRef" class="btn btn-default" type="submit">Play Chapter 3</button>
+  <div class="col-md-12">
     <button id="playMain" class="btn btn-default" type="submit">Play Chapter 1</button>
-    <form>
-      You: <input type="text">
-    </form>
+    <button id="playRef" class="btn btn-default" type="submit">Play Chapter 3</button>
+    <div id="description" class="well">
+      <p>
+        You and a bystander are at the scene of <emph>Chapter 1</emph>.
+        You would like to describe <emph>Chapter 3</emph> to her.
+      </p>
+      <form>
+        You: <input id="desc-text" type="text"/>
+      </form>
+    </div>
   </div>
 </div>
 </body>
